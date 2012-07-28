@@ -2,10 +2,11 @@ Ext.application({
     name: 'relaxly',
 
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'Ext.data.Store'
     ],
-
-    views: ['Main', 'List'],
+    
+    views: ['Main','List'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -41,11 +42,11 @@ Ext.application({
               xfbml      : true  // parse XFBML
             });
         	
-        	FB.Event.subscribe('auth.statusChange', handleStatusChange);
             FB.getLoginStatus(handleStatusChange);
         };
 
         handleStatusChange = function (response) {
+        	console.log("status changed "+response.status);
     	  if (response.status === 'connected') {
     	    // the user is logged in and has authenticated your
     	    // app, and response.authResponse supplies
@@ -54,19 +55,31 @@ Ext.application({
     	    // and signed request each expire
     	    //var uid = response.authResponse.userID;
     	    //var accessToken = response.authResponse.accessToken;
+    		  
+		    FB.api('/me', function(response) {
+	    		console.log(response);
+	    	});  
+    		
+		    Ext.Viewport.removeAll(true, true);
     		Ext.Viewport.add(Ext.create('relaxly.view.List'));
     	  } else if (response.status === 'not_authorized') {
     	    // the user is logged in to Facebook, 
     	    // but has not authenticated your app
+    		FB.Event.subscribe('auth.statusChange', handleStatusChange);
+    		  
+    		Ext.Viewport.removeAll(true, true);
     		Ext.Viewport.add(Ext.create('relaxly.view.Main'));
     	  } else {
     	    // the user isn't logged in to Facebook.
+    		FB.Event.subscribe('auth.statusChange', handleStatusChange);
+    		  
+    		Ext.Viewport.removeAll(true, true);
     		Ext.Viewport.add(Ext.create('relaxly.view.Main'));
     	  }
         };         
         
         login = function() {
-          	Parse.FacebookUtils.logIn("email,user_events, user_hometown, user_relationships, user_relationship_details, friends_events", {
+          	Parse.FacebookUtils.logIn("email,user_events, user_hometown, user_relationships, user_relationship_details, friends_events, user_likes", {
     		  success: function(user) {
     		    if (!user.existed()) {
     		    	FB.api('/me', function(response) {
@@ -79,8 +92,9 @@ Ext.application({
             		          $(".error").show();
             		        }
             	        });
-                  });
+    		    	});
     		    } else {
+    		    	
     		    }
     		  },
     		  error: function(user, error) {
@@ -89,14 +103,18 @@ Ext.application({
         	});         	
         };
         
-          // Load the SDK Asynchronously
-          (function(d){
-             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-             if (d.getElementById(id)) {return;}
-             js = d.createElement('script'); js.id = id; js.async = true;
-             js.src = "//connect.facebook.net/en_US/all.js";
-             ref.parentNode.insertBefore(js, ref);
-           }(document));
+        logout = function() {
+        	FB.logout();
+        };
+        
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
     },
 
     onUpdated: function() {
