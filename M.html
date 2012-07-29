@@ -70,7 +70,7 @@
 	    //var uid = response.authResponse.userID;
 	    //var accessToken = response.authResponse.accessToken;
 		
-	    //$.mobile.changePage("#categories");
+	    $.mobile.changePage("#categories");
 	    
 	    FB.api('/me', function(response) {
     		console.log(response);
@@ -299,8 +299,9 @@
 	              	<span><p>{{attributes.phone}}</p></span>
 	              	<span><p>{{attributes.likes}} likes</p></span>
 				</div>
+				<div style='clear:both;'>
 				<div id="mapa">
-					<img src="">
+					<img src="images/mapa-iconos.png">
 				</div>
 		</script>
 	
