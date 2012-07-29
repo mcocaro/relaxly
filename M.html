@@ -12,7 +12,8 @@
 	<link rel="stylesheet" href="resources/css/relax.ly.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
-	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.12.min.js"></script>   
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.12.min.js"></script>
+	<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>   
 	<style type="text/css">
         #main {
             height: 100%;
@@ -120,6 +121,9 @@
      ref.parentNode.insertBefore(js, ref);
    }(document));
 
+  		_.templateSettings = {
+		  interpolate : /\{\{(.+?)\}\}/g
+		};
 	</script>
 </head> 
 <body> 
@@ -169,14 +173,16 @@
 			<h1><img src="resources/images/relaxly_logo2.png" width="107px;" height="50px;"></h1>
 			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
 		</div><!-- /header -->
-	
+
 		<div data-role="content">	
-			<ul data-role="listview" data-inset="true" data-filter="true">
+			<ul data-role="listview" data-inset="true" data-filter="true" id="listContainer">
+			<!--
 				<li>
 					<a href="#details">
 		              <div class='item'>
-		              	<span><p><strong>Depilacion por vos</strong></p></span>
-		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
+		              	<span><p><strong>Belleza Urbana</strong></p></span>
+		              	<span><p>Sarmiento 559, Buenos Aires, Capital Federal</p></span>
+		              	<span><p>Argentina - Tel: 11 4328 1392</p></span>
 		              	<span><p>4 likes</p></span>
 		              </div>
 		            </a>
@@ -184,21 +190,24 @@
 				<li>
 					<a href="#details">
 		              <div class='item'>
-		              	<span><p><strong>Depilacion por vos</strong></p></span>
-		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
-		              	<span><p>4 likes</p></span>
+		              	<span><p><strong>Buenos Ayres Style</strong></p></span>
+		              	<span><p>Sarmiento 833, 1041 Microcentro, Capital Federal</p></span>
+		              	<span><p>Argentina - Tel: 11 4393 3412</p></span>
+		              	<span><p>2 likes</p></span>
 		              </div>
 		            </a>
 				</li>
 				<li>
 					<a href="#details">
 		              <div class='item'>
-		              	<span><p><strong>Depilacion por vos</strong></p></span>
-		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
-		              	<span><p>4 likes</p></span>
+		              	<span><p><strong>Monica Brenta Beauty Center</strong></p></span>
+		              	<span><p>Avenida Santa Fe 1531, Buenos Aires, Capital Federal</p></span>
+		              	<span><p>Argentina - Tel: 800 333 2736</p></span>
+		              	<span><p>1 likes</p></span>
 		              </div>
 		            </a>
 				</li>
+				-->
 			</ul>
 		</div><!-- /content -->
 	
@@ -209,6 +218,35 @@
 				<a href="#preferences" data-role="button" data-icon="gear" data-iconpos="top">Preferencias</a>
 			</div>
 		</div>
+	
+		<script id="listTemplate" type="x-template/item">
+				<li>
+					<a href="#details">
+		              <div class='item'>
+		              	<span><p><strong>{{name}}</strong></p></span>
+		              	<span><p>{{address}}</p></span>
+		              	<span><p>{{phone}}</p></span>
+		              	<span><p>{{likes}} likes</p></span>
+		              </div>
+		            </a>
+				</li>
+		</script>
+	
+		<script type="text/javascript">
+		var template = _.template($("#listTemplate").text());
+		var Provider = Parse.Object.extend("Provider");
+		var query = new Parse.Query(Provider);
+		query.find({
+		  success: function(results) {
+			  $.each(results, function (ix, val) {
+				  $("#listContainer").append(template(val.attributes));
+			  })
+		  },
+		  error: function(error) {
+		    alert("Error: " + error.code + " " + error.message);
+		  }
+		});	
+		</script>	
 	
 	</div><!-- /page -->
 
@@ -222,8 +260,17 @@
 	
 		<div data-role="content">	
 			<div id="details">
-				
-				
+				<div id="image">
+					<img src="">
+				</div>
+				<div id="description">
+					<p><strong>Belleza Urbana</strong></p>
+					<p>Direccion</p>
+					<p>Servicios</p>
+				</div>
+				<div id="mapa">
+					<img src="">
+				</div>
 			</div>
 		</div><!-- /content -->
 	
