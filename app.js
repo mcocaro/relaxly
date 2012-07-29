@@ -3,7 +3,8 @@ Ext.application({
 
     requires: [
         'Ext.MessageBox',
-        'Ext.data.Store'
+        'Ext.data.Store',
+        'Ext.util.GeoLocation'
     ],
     
     views: ['Main','List'],
@@ -56,12 +57,29 @@ Ext.application({
     	    //var uid = response.authResponse.userID;
     	    //var accessToken = response.authResponse.accessToken;
     		  
-		    FB.api('/me', function(response) {
+		    FB.api('/me/likes', function(response) {
 	    		console.log(response);
+	    		var geo = Ext.create('Ext.util.Geolocation', {
+			        autoUpdate: false,
+			        listeners: {
+			            locationupdate: function(geo) {
+			                console.log('New latitude: ' + geo.getLatitude());
+			            },
+			            locationerror: function(geo, bTimeout, bPermissionDenied, bLocationUnavailable, message) {
+			                if(bTimeout){
+			                	console.log('Timeout occurred.');
+			                } else {
+			                	console.log('Error occurred.');
+			                }
+			            }
+			        }
+			    });
+			    geo.updateLocation();
+			    
+			    Ext.Viewport.removeAll(true, true);
+	    		Ext.Viewport.add(Ext.create('relaxly.view.List'));
 	    	});  
     		
-		    Ext.Viewport.removeAll(true, true);
-    		Ext.Viewport.add(Ext.create('relaxly.view.List'));
     	  } else if (response.status === 'not_authorized') {
     	    // the user is logged in to Facebook, 
     	    // but has not authenticated your app
@@ -96,6 +114,7 @@ Ext.application({
     		    } else {
     		    	
     		    }
+    		    window.location = "http://localhost:8080/relaxly";
     		  },
     		  error: function(user, error) {
     		    //alert("User cancelled the Facebook login or did not fully authorize.");
