@@ -3,18 +3,32 @@
 	<head> 
 	<title>Relax.ly</title> 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes">
-	 
+    
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+	<link rel="stylesheet" href="resources/css/relax.ly.css" />
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.12.min.js"></script>   
 	<style type="text/css">
-        html, body {
+        #main {
             height: 100%;
             background-color: #7D4E2A;
+            background-image: none;
+        	text-align: center;
+        	position: relative;
+        	width: 100%;
+        	color: white;
+        	text-shadow: none;
+        	display: table; 
+        }
+        
+        #content {
+        	position: relative;
+        	display: table-cell; 
+        	vertical-align: middle;
+        	text-align: center;
         }
 	</style>
 	<script type="text/javascript">
@@ -43,10 +57,12 @@
 	    // and signed request each expire
 	    //var uid = response.authResponse.userID;
 	    //var accessToken = response.authResponse.accessToken;
-		  
+		
+	    $.mobile.changePage("#categories");
+	    
 	    FB.api('/me', function(response) {
     		console.log(response);
-    		$.mobile.changePage("#categories");
+    		
     	});  
 		
 	  } else if (response.status === 'not_authorized') {
@@ -109,9 +125,9 @@
 	
 	<div data-role="page" id="main">
 	
-		<div data-role="content">
+		<div data-role="content" id="content">
 			<img src="resources/images/relaxly_logo2.png" width="150px;" height="100px;">
-			<br>
+			<br><p>Unete y encuentra masajistas, peluqueros cerca de tu casa!<br>
 			<div id="login" class="fb-login-button" scope="email,user_events, user_hometown, user_relationships, user_relationship_details, friends_events" style="display:none;">
         		Login with Facebook
 	      	</div>		
@@ -121,7 +137,7 @@
 
 	<div data-role="page" id="categories">
 	
-		<div id="header" data-role="header" data-position="fixed">
+		<div id="header" data-role="header" data-position="fixed" data-theme="a">
 			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
 			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
 		</div><!-- /header -->
@@ -136,17 +152,18 @@
 		</div><!-- /content -->
 	
 		<div data-role="footer" data-position="fixed" style="text-align:center;">
-			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
-			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
-			<a href="#preferences" data-role="button" data-icon="gear">Preferencias</a>
+			<div data-role="navbar">
+				<a href="#categories" class="ui-btn-active" data-role="button" data-icon="search" data-iconpos="top">Encontra</a>
+				<a href="#favorites" data-role="button" data-icon="favorites" data-iconpos="top">Favoritos</a>
+				<a href="#preferences" data-role="button" data-icon="gear" data-iconpos="top">Preferencias</a>
+			</div>
 		</div>
 	
 	</div><!-- /page -->
 
-	<div data-role="page" id="providers">
+	<div data-role="page" id="providers" data-add-back-btn="true">
 	
 		<div id="header" data-role="header" data-position="fixed">
-			<a href="#categories" data-role="button" data-icon="back" class="ui-btn-left center">Back</a>
 			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
 			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
 		</div><!-- /header -->
@@ -184,32 +201,36 @@
 		</div><!-- /content -->
 	
 		<div data-role="footer" data-position="fixed" style="text-align:center;">
-			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
-			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
-			<a href="#preferences" data-role="button" data-icon="preferences">Preferencias</a>
+			<div data-role="navbar">
+				<a href="#categories" data-role="button" data-icon="search" data-iconpos="top">Encontra</a>
+				<a href="#favorites" data-role="button" data-icon="favorites" data-iconpos="top">Favoritos</a>
+				<a href="#preferences" data-role="button" data-icon="gear" data-iconpos="top">Preferencias</a>
+			</div>
 		</div>
 	
 	</div><!-- /page -->
 
 
-	<div data-role="page" id="details">
+	<div data-role="page" id="details" data-add-back-btn="true">
 	
 		<div id="header" data-role="header" data-position="fixed">
-			<a href="#providers" data-role="button" data-icon="back" class="ui-btn-left center">Back</a>
 			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
 			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
 		</div><!-- /header -->
 	
 		<div data-role="content">	
 			<div id="details">
-				<div class=""></div>
+				
+				
 			</div>
 		</div><!-- /content -->
 	
 		<div data-role="footer" data-position="fixed" style="text-align:center;">
-			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
-			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
-			<a href="#preferences" data-role="button" data-icon="preferences">Preferencias</a>
+			<div data-role="navbar">
+				<a href="#categories" data-role="button" data-icon="search" data-iconpos="top">Encontra</a>
+				<a href="#favorites" data-role="button" data-icon="favorites" data-iconpos="top">Favoritos</a>
+				<a href="#preferences" data-role="button" data-icon="gear" data-iconpos="top">Preferencias</a>
+			</div>
 		</div>
 	
 	</div><!-- /page -->
