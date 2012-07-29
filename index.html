@@ -1,13 +1,15 @@
 <!DOCTYPE HTML>
 <html manifest="" lang="en-US">
 <head>
-    <meta charset="UTF-8">
-    <title>Relax.ly</title>
-  	<meta name="description" content="Relaxly">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta content="charset=utf-8">
+
   	<!-- Have Apple minimize the status bar -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    
+    <meta name="apple-touch-fullscreen" content="yes">
+
+    <title>Relax.ly</title>
+        
     <style type="text/css">
          /**
          * Example of an initial loading indicator.
@@ -16,7 +18,7 @@
          */
         html, body {
             height: 100%;
-            background-color: #1985D0
+            background-color: #7D4E2A
         }
 
         #appLoadingIndicator {
@@ -53,6 +55,18 @@
                 opacity: 0.8
             }
         }
+        
+        #layout {
+        	background: #7D4E2A;
+        	height: 100%;
+        	text-align: center;
+        	position: absolute;
+        	width: 100%;
+        }
+        
+        #content {
+        	top: 50%;
+        }
     </style>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src="sdk/microloader/development.js"></script>
@@ -60,7 +74,7 @@
   	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.12.min.js"></script>    
 </head>
 <body>
-	<div id='fb-root'></div>
+	<div id='fb-root' style="display: none;"></div>
     <div id="appLoadingIndicator">
         <div></div>
         <div></div>

@@ -7,7 +7,7 @@ Ext.application({
         'Ext.util.GeoLocation'
     ],
     
-    views: ['Main','List'],
+    views: ['Main','List','Provider'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -114,7 +114,7 @@ Ext.application({
     		    } else {
     		    	
     		    }
-    		    window.location = "http://localhost:8080/relaxly";
+    		    document.location.reload(true);
     		  },
     		  error: function(user, error) {
     		    //alert("User cancelled the Facebook login or did not fully authorize.");
@@ -123,7 +123,7 @@ Ext.application({
         };
         
         logout = function() {
-        	FB.logout();
+        	console.log(FB.logout());
         };
         
       // Load the SDK Asynchronously

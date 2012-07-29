@@ -1,4 +1,4 @@
-Ext.define("relaxly.view.List", {
+Ext.define("relaxly.view.TabPanel", {
     extend: 'Ext.tab.Panel',
     xtype:'lista',
     requires: [
