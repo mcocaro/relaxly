@@ -1,0 +1,217 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+	<title>Relax.ly</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes">
+	 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.12.min.js"></script>   
+	<style type="text/css">
+        html, body {
+            height: 100%;
+            background-color: #7D4E2A;
+        }
+	</style>
+	<script type="text/javascript">
+    Parse.initialize("SRb1TxVp4zIAEL5V1NO25tScFVF7XHeLCGTOVBQa", "JvnOg9HzNWZhXUCWviu9MZHxw7ztHXZOj2Jxr79h");
+    var Relaxer = Parse.Object.extend("Relaxer");
+    
+    window.fbAsyncInit = function() {
+    	Parse.FacebookUtils.init({
+          appId      : '391382627582773', // App ID
+          channelUrl : '/relaxly/channel.html', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+    	
+        FB.getLoginStatus(handleStatusChange);
+    };
+
+    handleStatusChange = function (response) {
+    	console.log("status changed "+response.status);
+	  if (response.status === 'connected') {
+	    // the user is logged in and has authenticated your
+	    // app, and response.authResponse supplies
+	    // the user's ID, a valid access token, a signed
+	    // request, and the time the access token 
+	    // and signed request each expire
+	    //var uid = response.authResponse.userID;
+	    //var accessToken = response.authResponse.accessToken;
+		  
+	    FB.api('/me', function(response) {
+    		console.log(response);
+    		$.mobile.changePage("#categories");
+    	});  
+		
+	  } else if (response.status === 'not_authorized') {
+	    // the user is logged in to Facebook, 
+	    // but has not authenticated your app
+		FB.Event.subscribe('auth.statusChange', handleStatusChange);
+		$.mobile.changePage("#main");
+		$("#login").show();
+	  } else {
+	    // the user isn't logged in to Facebook.
+		FB.Event.subscribe('auth.statusChange', handleStatusChange);
+		$.mobile.changePage("#main");  
+		$("#login").show();
+	  }
+    };         
+    
+    login = function() {
+      	Parse.FacebookUtils.logIn("email,user_events, user_hometown, user_relationships, user_relationship_details, friends_events, user_likes", {
+		  success: function(user) {
+		    if (!user.existed()) {
+		    	FB.api('/me', function(response) {
+		    		var point = new Parse.GeoPoint({latitude: 40.0, longitude: -30.0});
+        	        user.save({name: response.name, loc: point}, {
+        		        success: function(object) {
+        		          $(".success").show();
+        		        },
+        		        error: function(model, error) {
+        		          $(".error").show();
+        		        }
+        	        });
+		    	});
+		    } else {
+		    	
+		    }
+		    document.location.reload(true);
+		  },
+		  error: function(user, error) {
+		    //alert("User cancelled the Facebook login or did not fully authorize.");
+		  }
+    	});         	
+    };
+    
+    logout = function() {
+    	console.log(FB.logout());
+    };
+    
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+
+	</script>
+</head> 
+<body> 
+	<div id='fb-root' style="display: none;"></div>
+	
+	<div data-role="page" id="main">
+	
+		<div data-role="content">
+			<img src="resources/images/relaxly_logo2.png" width="150px;" height="100px;">
+			<br>
+			<div id="login" class="fb-login-button" scope="email,user_events, user_hometown, user_relationships, user_relationship_details, friends_events" style="display:none;">
+        		Login with Facebook
+	      	</div>		
+		</div><!-- /content -->
+
+	</div><!-- /page -->
+
+	<div data-role="page" id="categories">
+	
+		<div id="header" data-role="header" data-position="fixed">
+			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
+			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
+		</div><!-- /header -->
+	
+		<div data-role="content">	
+			<ul data-role="listview" data-inset="true">
+				<li><a href="#providers">Belleza</a></li>
+				<li><a href="#">Peluqueria</a></li>
+				<li><a href="#">Depilacion</a></li>
+				<li><a href="#">SPA</a></li>
+			</ul>
+		</div><!-- /content -->
+	
+		<div data-role="footer" data-position="fixed" style="text-align:center;">
+			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
+			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
+			<a href="#preferences" data-role="button" data-icon="gear">Preferencias</a>
+		</div>
+	
+	</div><!-- /page -->
+
+	<div data-role="page" id="providers">
+	
+		<div id="header" data-role="header" data-position="fixed">
+			<a href="#categories" data-role="button" data-icon="back" class="ui-btn-left center">Back</a>
+			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
+			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
+		</div><!-- /header -->
+	
+		<div data-role="content">	
+			<ul data-role="listview" data-inset="true" data-filter="true">
+				<li>
+					<a href="#details">
+		              <div class='item'>
+		              	<span><p><strong>Depilacion por vos</strong></p></span>
+		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
+		              	<span><p>4 likes</p></span>
+		              </div>
+		            </a>
+				</li>
+				<li>
+					<a href="#details">
+		              <div class='item'>
+		              	<span><p><strong>Depilacion por vos</strong></p></span>
+		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
+		              	<span><p>4 likes</p></span>
+		              </div>
+		            </a>
+				</li>
+				<li>
+					<a href="#details">
+		              <div class='item'>
+		              	<span><p><strong>Depilacion por vos</strong></p></span>
+		              	<span><p>Avda Corrientes 1444, Capital Federal</p></span>
+		              	<span><p>4 likes</p></span>
+		              </div>
+		            </a>
+				</li>
+			</ul>
+		</div><!-- /content -->
+	
+		<div data-role="footer" data-position="fixed" style="text-align:center;">
+			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
+			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
+			<a href="#preferences" data-role="button" data-icon="preferences">Preferencias</a>
+		</div>
+	
+	</div><!-- /page -->
+
+
+	<div data-role="page" id="details">
+	
+		<div id="header" data-role="header" data-position="fixed">
+			<a href="#providers" data-role="button" data-icon="back" class="ui-btn-left center">Back</a>
+			<h1><img src="resources/images/relaxly_logo2.png" width="90px;" height="50px;"></h1>
+			<a href="#main" data-role="button" data-icon="star" onClick="FB.logout();" class="ui-btn-right center">Log-out</a>
+		</div><!-- /header -->
+	
+		<div data-role="content">	
+			<div id="details">
+				<div class=""></div>
+			</div>
+		</div><!-- /content -->
+	
+		<div data-role="footer" data-position="fixed" style="text-align:center;">
+			<a href="#categories" data-role="button" data-icon="search">Encontra</a>
+			<a href="#favorites" data-role="button" data-icon="favorites">Favoritos</a>
+			<a href="#preferences" data-role="button" data-icon="preferences">Preferencias</a>
+		</div>
+	
+	</div><!-- /page -->
+</body>
+</html>
