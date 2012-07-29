@@ -33,6 +33,15 @@
         	vertical-align: middle;
         	text-align: center;
         }
+        
+        #image {
+        	float: left;
+        }
+        
+        #description {
+        	margin-left: 15px;
+        	float: left;
+        }
 	</style>
 	<script type="text/javascript">
     Parse.initialize("SRb1TxVp4zIAEL5V1NO25tScFVF7XHeLCGTOVBQa", "JvnOg9HzNWZhXUCWviu9MZHxw7ztHXZOj2Jxr79h");
@@ -61,7 +70,7 @@
 	    //var uid = response.authResponse.userID;
 	    //var accessToken = response.authResponse.accessToken;
 		
-	    $.mobile.changePage("#categories");
+	    //$.mobile.changePage("#categories");
 	    
 	    FB.api('/me', function(response) {
     		console.log(response);
@@ -221,12 +230,12 @@
 	
 		<script id="listTemplate" type="x-template/item">
 				<li>
-					<a href="#details">
+					<a href='#detailsPage?id={{cid}}'>
 		              <div class='item'>
-		              	<span><p><strong>{{name}}</strong></p></span>
-		              	<span><p>{{address}}</p></span>
-		              	<span><p>{{phone}}</p></span>
-		              	<span><p>{{likes}} likes</p></span>
+		              	<span><p><strong>{{attributes.name}}</strong></p></span>
+		              	<span><p>{{attributes.address}}</p></span>
+		              	<span><p>{{attributes.phone}}</p></span>
+		              	<span><p>{{attributes.likes}} likes</p></span>
 		              </div>
 		            </a>
 				</li>
@@ -235,11 +244,14 @@
 		<script type="text/javascript">
 		var template = _.template($("#listTemplate").text());
 		var Provider = Parse.Object.extend("Provider");
+		var listOfProviders = [];
 		var query = new Parse.Query(Provider);
 		query.find({
 		  success: function(results) {
 			  $.each(results, function (ix, val) {
-				  $("#listContainer").append(template(val.attributes));
+				  listOfProviders.push(val);
+				  $("#listContainer").append(template(val));
+				  console.log(val);
 			  })
 		  },
 		  error: function(error) {
@@ -251,7 +263,7 @@
 	</div><!-- /page -->
 
 
-	<div data-role="page" id="details" data-add-back-btn="true">
+	<div data-role="page" id="detailsPage" data-add-back-btn="true">
 	
 		<div id="header" data-role="header" data-position="fixed" data-theme="a">
 			<h1><img src="resources/images/relaxly_logo2.png" width="107px;" height="50px;"></h1>
@@ -260,19 +272,52 @@
 	
 		<div data-role="content">	
 			<div id="details">
+			<!-- 
 				<div id="image">
-					<img src="">
+					<img src="images/belleza_urbana.jpeg" width="92px" height="99px">
 				</div>
 				<div id="description">
-					<p><strong>Belleza Urbana</strong></p>
-					<p>Direccion</p>
-					<p>Servicios</p>
+					<span><p><strong>{{name}}</strong></p></span>
+	              	<span><p>{{address}}</p></span>
+	              	<span><p>{{phone}}</p></span>
+	              	<span><p>{{likes}} likes</p></span>
 				</div>
 				<div id="mapa">
 					<img src="">
 				</div>
+			-->
 			</div>
 		</div><!-- /content -->
+
+		<script id="detailsTemplate" type="x-template/item">
+				<div id="image">
+					<img src="images/belleza_urbana.jpeg" width="92px" height="99px">
+				</div>
+				<div id="description">
+					<span><p><strong>{{attributes.name}}</strong></p></span>
+	              	<span><p>{{attributes.address}}</p></span>
+	              	<span><p>{{attributes.phone}}</p></span>
+	              	<span><p>{{attributes.likes}} likes</p></span>
+				</div>
+				<div id="mapa">
+					<img src="">
+				</div>
+		</script>
+	
+		<script type="text/javascript">
+		var detailsTemplate = _.template($("#detailsTemplate").text());
+		$( '#detailsPage' ).live( 'pageshow',function(event){
+			var selId = window.location.href.split("id=")[1];
+			console.log(selId);
+			$.each(listOfProviders, function (ix, val) {
+				if(selId == val.cid) {
+					console.log(val);
+					$("#details").empty();
+					$("#details").append(detailsTemplate(val));
+				}
+			  });
+		});
+		</script>	
 	
 		<div data-role="footer" data-position="fixed" style="text-align:center;">
 			<div data-role="navbar">
